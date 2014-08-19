@@ -1,4 +1,5 @@
 <?php
+
 namespace Nextras\Application;
 
 use Nette;
@@ -16,11 +17,13 @@ class LinkFactory extends Nette\Object
 	/** @var Nette\Http\IRequest */
 	private $httpRequest;
 
+
 	public function __construct(Nette\Application\IRouter $router, Nette\Http\IRequest $httpRequest)
 	{
 		$this->router = $router;
 		$this->httpRequest = $httpRequest;
 	}
+
 
 	/**
 	 * Creates link.

@@ -1,6 +1,9 @@
 <?php
+
 namespace Nextras\Application;
 
+use Nette\Application\Request;
+use Nette\Http\Url;
 use Tester;
 use Tester\Assert;
 use Mockery;
@@ -12,11 +15,11 @@ class LinkFactoryTest extends Tester\TestCase
 {
 	public function testLink()
 	{
-		$url = new \Nette\Http\Url('proto://example.com/dir/');
+		$url = new Url('proto://example.com/dir/');
 
 		$router = Mockery::mock('Nette\Application\IRouter')
 			->shouldReceive('constructUrl')->with(
-				Mockery::on(function (\Nette\Application\Request $appRequest) {
+				Mockery::on(function (Request $appRequest) {
 					Assert::same('Foo', $appRequest->presenterName);
 					Assert::equal(['action' => 'bar', 'a' => 'b'], $appRequest->parameters);
 					return TRUE;
