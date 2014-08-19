@@ -9,7 +9,7 @@ matrix:
     allow_failures:
         - php: hhvm
 
-script: ./vendor/tester ./tests/cases
+script: ./vendor/bin/tester ./tests/cases
 
 before_script:
     # Install Nette Tester
