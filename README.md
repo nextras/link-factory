@@ -11,6 +11,6 @@ Add to your composer.json:
 
 ```
 "require": {
-	"nextras/link-factory": "@dev"
+	"nextras/link-factory": "~1.0"
 }
 ```
