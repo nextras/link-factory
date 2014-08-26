@@ -37,7 +37,7 @@ class LinkFactory extends Nette\Object
 	 * @param  array
 	 * @return string
 	 */
-	public function link($destination, array $params = [])
+	public function link($destination, array $params = array())
 	{
 		if (($pos = strrpos($destination, '#')) !== FALSE) {
 			$fragment = substr($destination, $pos);

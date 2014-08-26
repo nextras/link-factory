@@ -21,7 +21,7 @@ class LinkFactoryTest extends Tester\TestCase
 			->shouldReceive('constructUrl')->with(
 				Mockery::on(function (Request $appRequest) {
 					Assert::same('Foo', $appRequest->presenterName);
-					Assert::equal(['action' => 'bar', 'a' => 'b'], $appRequest->parameters);
+					Assert::equal(array('action' => 'bar', 'a' => 'b'), $appRequest->parameters);
 					return TRUE;
 				}),
 				$url
@@ -35,9 +35,10 @@ class LinkFactoryTest extends Tester\TestCase
 			->getMock();
 
 		$factory = new LinkFactory($router, $request);
-		Assert::same('/dir/foo?a=b', $factory->link('Foo:bar', ['a' => 'b']));
-		Assert::same('proto://example.com/dir/foo?a=b#anchor', $factory->link('//Foo:bar#anchor', ['a' => 'b']));
+		Assert::same('/dir/foo?a=b', $factory->link('Foo:bar', array('a' => 'b')));
+		Assert::same('proto://example.com/dir/foo?a=b#anchor', $factory->link('//Foo:bar#anchor', array('a' => 'b')));
 	}
 }
 
-(new LinkFactoryTest)->run();
+$test = new LinkFactoryTest;
+$test->run();
