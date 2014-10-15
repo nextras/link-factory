@@ -15,3 +15,30 @@ Add to your composer.json:
 	"nextras/link-factory": "~1.0"
 }
 ```
+
+
+### Example
+
+```php
+use Nextras\Application\LinkFactory;
+
+class Example
+{
+	/** @var LinkFactory */
+	private $linkFactory;
+
+	public function __construct(LinkFactory $linkFactory)
+	{
+		$this->linkFactory = $linkFactory;
+	}
+
+	public function doSomething()
+	{
+		// relative link with optional fragment (#comments) and parameters
+		$link = $this->linkFactory->link('Products:view#comments', ['id' => 123]);
+
+		// absolute link starts with '//'
+		$link = $this->linkFactory->link('//Homepage:default');
+	}
+}
+```
