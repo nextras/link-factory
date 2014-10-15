@@ -53,11 +53,10 @@ class LinkFactory extends Nette\Object
 			$absoluteUrl = FALSE;
 		}
 
-		$parts = explode(':', $destination);
-		$action = array_pop($parts);
-		$presenter = implode(':', $parts);
+		$pos = strrpos($destination, ':');
+		$presenter = substr($destination, 0, $pos);
+		$params['action'] = substr($destination, $pos + 1);
 
-		$params['action'] = $action;
 		$request = new Nette\Application\Request($presenter, 'GET', $params);
 		$refUrl = $this->httpRequest->getUrl();
 		$url = $this->router->constructUrl($request, $refUrl);
