@@ -28,6 +28,12 @@ class LinkFactoryTest extends Tester\TestCase
 			'Foo', ['a' => 'b', 'action' => 'bar'],
 			'http://example.com/basepath/foo/bar?a=b#anchor'
 		);
+
+		$this->assertLink(
+			'Admin:Dashboard:default', [],
+			'Admin:Dashboard', ['action' => 'default'],
+			'/basepath/admin.dashboard/default'
+		);
 	}
 
 
