@@ -18,20 +18,20 @@ class LinkFactoryTest extends Tester\TestCase
 	public function testLink()
 	{
 		$this->assertLink(
-			'Foo:bar', ['a' => 'b'],
-			'Foo', ['a' => 'b', 'action' => 'bar'],
+			'Foo:bar', array('a' => 'b'),
+			'Foo', array('a' => 'b', 'action' => 'bar'),
 			'/basepath/foo/bar?a=b'
 		);
 
 		$this->assertLink(
-			'//Foo:bar#anchor', ['a' => 'b'],
-			'Foo', ['a' => 'b', 'action' => 'bar'],
+			'//Foo:bar#anchor', array('a' => 'b'),
+			'Foo', array('a' => 'b', 'action' => 'bar'),
 			'http://example.com/basepath/foo/bar?a=b#anchor'
 		);
 
 		$this->assertLink(
-			'Admin:Dashboard:default', [],
-			'Admin:Dashboard', ['action' => 'default'],
+			'Admin:Dashboard:default', array(),
+			'Admin:Dashboard', array('action' => 'default'),
 			'/basepath/admin.dashboard/default'
 		);
 	}
@@ -49,13 +49,13 @@ class LinkFactoryTest extends Tester\TestCase
 					Assert::same($requestPresenter, $appRequest->getPresenterName());
 					Assert::same($requestParams, $appRequest->getParameters());
 					Assert::same('GET', $appRequest->getMethod());
-					Assert::same([], $appRequest->getPost());
-					Assert::same([], $appRequest->getFiles());
+					Assert::same(array(), $appRequest->getPost());
+					Assert::same(array(), $appRequest->getFiles());
 					return TRUE;
 				}),
 				$url
 			)
-			->andReturnUsing([$realRouter, 'constructUrl'])
+			->andReturnUsing(array($realRouter, 'constructUrl'))
 			->getMock();
 
 		$request = Mockery::mock('Nette\Http\IRequest')
