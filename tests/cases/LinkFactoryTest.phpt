@@ -3,6 +3,7 @@
 namespace Nextras\Application;
 
 use Nette\Application\Request;
+use Nette\Application\Routers\Route;
 use Nette\Http\Url;
 use Tester;
 use Tester\Assert;
@@ -13,20 +14,42 @@ require __DIR__ . '/../bootstrap.php';
 
 class LinkFactoryTest extends Tester\TestCase
 {
+
 	public function testLink()
 	{
-		$url = new Url('proto://example.com/dir/');
+		$this->assertLink(
+			'Foo:bar', ['a' => 'b'],
+			'Foo', ['a' => 'b', 'action' => 'bar'],
+			'/basepath/foo/bar?a=b'
+		);
+
+		$this->assertLink(
+			'//Foo:bar#anchor', ['a' => 'b'],
+			'Foo', ['a' => 'b', 'action' => 'bar'],
+			'http://example.com/basepath/foo/bar?a=b#anchor'
+		);
+	}
+
+
+	public function assertLink($dest, $destParams, $requestPresenter, $requestParams, $finalUrl)
+	{
+		$url = new Url('http://example.com/basepath/');
+
+		$realRouter = new Route('<presenter>/<action>');
 
 		$router = Mockery::mock('Nette\Application\IRouter')
 			->shouldReceive('constructUrl')->with(
-				Mockery::on(function (Request $appRequest) {
-					Assert::same('Foo', $appRequest->presenterName);
-					Assert::equal(array('action' => 'bar', 'a' => 'b'), $appRequest->parameters);
+				Mockery::on(function (Request $appRequest) use ($requestPresenter, $requestParams) {
+					Assert::same($requestPresenter, $appRequest->getPresenterName());
+					Assert::same($requestParams, $appRequest->getParameters());
+					Assert::same('GET', $appRequest->getMethod());
+					Assert::same([], $appRequest->getPost());
+					Assert::same([], $appRequest->getFiles());
 					return TRUE;
 				}),
 				$url
 			)
-			->andReturn('proto://example.com/dir/foo?a=b')
+			->andReturnUsing([$realRouter, 'constructUrl'])
 			->getMock();
 
 		$request = Mockery::mock('Nette\Http\IRequest')
@@ -35,9 +58,9 @@ class LinkFactoryTest extends Tester\TestCase
 			->getMock();
 
 		$factory = new LinkFactory($router, $request);
-		Assert::same('/dir/foo?a=b', $factory->link('Foo:bar', array('a' => 'b')));
-		Assert::same('proto://example.com/dir/foo?a=b#anchor', $factory->link('//Foo:bar#anchor', array('a' => 'b')));
+		Assert::same($finalUrl, $factory->link($dest, $destParams));
 	}
+
 }
 
 $test = new LinkFactoryTest;
