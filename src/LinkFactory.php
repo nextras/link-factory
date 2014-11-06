@@ -36,6 +36,7 @@ class LinkFactory extends Nette\Object
 	 * @param  string 'Presenter:action' (creates relative link) or '//Presenter:action' (creates absolute link)
 	 * @param  array
 	 * @return string
+	 * @throws InvalidLinkException if router returns NULL
 	 */
 	public function link($destination, array $params = array())
 	{
@@ -60,6 +61,9 @@ class LinkFactory extends Nette\Object
 		$request = new Nette\Application\Request($presenter, 'GET', $params);
 		$refUrl = $this->httpRequest->getUrl();
 		$url = $this->router->constructUrl($request, $refUrl);
+		if ($url === NULL) {
+			throw new InvalidLinkException("Router failed to create link to '$destination'.");
+		}
 
 		if (!$absoluteUrl) {
 			$hostUrl = $refUrl->getHostUrl();
@@ -70,5 +74,10 @@ class LinkFactory extends Nette\Object
 
 		return $url . $fragment;
 	}
+
+}
+
+class InvalidLinkException extends \LogicException
+{
 
 }

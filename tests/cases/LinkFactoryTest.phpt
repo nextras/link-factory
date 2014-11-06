@@ -37,6 +37,31 @@ class LinkFactoryTest extends Tester\TestCase
 	}
 
 
+	public function testInvalidLink()
+	{
+		$url = new Url('http://example.com/basepath/');
+
+		$router = Mockery::mock('Nette\Application\IRouter')
+			->shouldReceive('constructUrl')
+			->andReturnNull()
+			->getMock();
+
+		$request = Mockery::mock('Nette\Http\IRequest')
+			->shouldReceive('getUrl')
+			->andReturn($url)
+			->getMock();
+
+		Assert::exception(
+			function () use ($router, $request) {
+				$factory = new LinkFactory($router, $request);
+				$factory->link('Homepage:default');
+			},
+			'Nextras\Application\InvalidLinkException',
+			'Router failed to create link to \'Homepage:default\'.'
+		);
+	}
+
+
 	public function assertLink($dest, $destParams, $requestPresenter, $requestParams, $finalUrl)
 	{
 		$url = new Url('http://example.com/basepath/');
