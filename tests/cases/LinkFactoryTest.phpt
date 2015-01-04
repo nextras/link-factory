@@ -19,31 +19,62 @@ require __DIR__ . '/../bootstrap.php';
 class LinkFactoryTest extends Tester\TestCase
 {
 
-	public function testLink()
+	/**
+	 * @dataProvider provideLinkData
+	 */
+	public function testLink($dest, $destParams, $requestPresenter, $requestParams, $finalUrl)
 	{
-		$this->assertLink(
-			'Foo:bar', array('a' => 'b'),
-			'Foo', array('a' => 'b', 'action' => 'bar'),
-			'/basepath/foo/bar?a=b'
-		);
+		$refUrl = new Url('http://example.com/basepath/');
 
-		$this->assertLink(
-			'//Foo:bar#anchor', array('a' => 'b'),
-			'Foo', array('a' => 'b', 'action' => 'bar'),
-			'http://example.com/basepath/foo/bar?a=b#anchor'
-		);
+		$appRequestMatcher = Mockery::on(function (Request $appRequest) use ($requestPresenter, $requestParams) {
+			Assert::same($requestPresenter, $appRequest->getPresenterName());
+			Assert::same($requestParams, $appRequest->getParameters());
+			Assert::same('GET', $appRequest->getMethod());
+			Assert::same(array(), $appRequest->getPost());
+			Assert::same(array(), $appRequest->getFiles());
+			return TRUE;
+		});
 
-		$this->assertLink(
-			'Admin:Dashboard:default', array(),
-			'Admin:Dashboard', array('action' => 'default'),
-			'/basepath/admin.dashboard/default'
+		$router = Mockery::mock('Nette\Application\IRouter')
+			->shouldReceive('constructUrl')->with($appRequestMatcher, $refUrl)
+			->andReturnUsing(array(new Route('<presenter>/<action>'), 'constructUrl'))
+			->getMock();
+
+		$request = Mockery::mock('Nette\Http\IRequest')
+			->shouldReceive('getUrl')->withNoArgs()
+			->andReturn($refUrl)
+			->getMock();
+
+		$factory = new LinkFactory($router, $request);
+		Assert::same($finalUrl, $factory->link($dest, $destParams));
+	}
+
+
+	public function provideLinkData()
+	{
+		return array(
+			array(
+				'Foo:bar', array('a' => 'b'),
+				'Foo', array('a' => 'b', 'action' => 'bar'),
+				'/basepath/foo/bar?a=b'
+			),
+			array(
+				'//Foo:bar#anchor', array('a' => 'b'),
+				'Foo', array('a' => 'b', 'action' => 'bar'),
+				'http://example.com/basepath/foo/bar?a=b#anchor'
+			),
+			array(
+				'Admin:Dashboard:default', array(),
+				'Admin:Dashboard', array('action' => 'default'),
+				'/basepath/admin.dashboard/default'
+			),
 		);
 	}
 
 
 	public function testInvalidLink()
 	{
-		$url = new Url('http://example.com/basepath/');
+		$refUrl = new Url('http://example.com/basepath/');
 
 		$router = Mockery::mock('Nette\Application\IRouter')
 			->shouldReceive('constructUrl')
@@ -52,7 +83,7 @@ class LinkFactoryTest extends Tester\TestCase
 
 		$request = Mockery::mock('Nette\Http\IRequest')
 			->shouldReceive('getUrl')
-			->andReturn($url)
+			->andReturn($refUrl)
 			->getMock();
 
 		Assert::exception(
@@ -63,37 +94,6 @@ class LinkFactoryTest extends Tester\TestCase
 			'Nextras\Application\InvalidLinkException',
 			'Router failed to create link to \'Homepage:default\'.'
 		);
-	}
-
-
-	public function assertLink($dest, $destParams, $requestPresenter, $requestParams, $finalUrl)
-	{
-		$url = new Url('http://example.com/basepath/');
-
-		$realRouter = new Route('<presenter>/<action>');
-
-		$router = Mockery::mock('Nette\Application\IRouter')
-			->shouldReceive('constructUrl')->with(
-				Mockery::on(function (Request $appRequest) use ($requestPresenter, $requestParams) {
-					Assert::same($requestPresenter, $appRequest->getPresenterName());
-					Assert::same($requestParams, $appRequest->getParameters());
-					Assert::same('GET', $appRequest->getMethod());
-					Assert::same(array(), $appRequest->getPost());
-					Assert::same(array(), $appRequest->getFiles());
-					return TRUE;
-				}),
-				$url
-			)
-			->andReturnUsing(array($realRouter, 'constructUrl'))
-			->getMock();
-
-		$request = Mockery::mock('Nette\Http\IRequest')
-			->shouldReceive('getUrl')
-			->andReturn($url)
-			->getMock();
-
-		$factory = new LinkFactory($router, $request);
-		Assert::same($finalUrl, $factory->link($dest, $destParams));
 	}
 
 }
