@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @testCase
+ */
+
 namespace Nextras\Application;
 
 use Nette\Application\Request;
