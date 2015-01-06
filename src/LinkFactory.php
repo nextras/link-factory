@@ -56,7 +56,7 @@ class LinkFactory extends Nette\Object
 
 		$pos = strrpos($destination, ':');
 		$presenter = substr($destination, 0, $pos);
-		$params['action'] = substr($destination, $pos + 1);
+		$params['action'] = substr($destination, $pos + 1) ?: 'default';
 
 		$request = new Nette\Application\Request($presenter, 'GET', $params);
 		$refUrl = $this->httpRequest->getUrl();

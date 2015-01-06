@@ -68,6 +68,11 @@ class LinkFactoryTest extends Tester\TestCase
 				'Admin:Dashboard', array('action' => 'default'),
 				'/basepath/admin.dashboard/default'
 			),
+			array(
+				'Admin:Dashboard:', array(),
+				'Admin:Dashboard', array('action' => 'default'),
+				'/basepath/admin.dashboard/default'
+			),
 		);
 	}
 
