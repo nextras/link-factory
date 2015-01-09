@@ -59,9 +59,9 @@ class LinkFactoryTest extends Tester\TestCase
 				'/basepath/foo/bar?a=b'
 			),
 			array(
-				'//Foo:bar#anchor', array('a' => 'b'),
+				'//Foo:bar#lorem:ipsum', array('a' => 'b'),
 				'Foo', array('a' => 'b', 'action' => 'bar'),
-				'http://example.com/basepath/foo/bar?a=b#anchor'
+				'http://example.com/basepath/foo/bar?a=b#lorem:ipsum'
 			),
 			array(
 				'Admin:Dashboard:default', array(),
