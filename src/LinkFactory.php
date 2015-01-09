@@ -14,14 +14,18 @@ class LinkFactory extends Nette\Object
 	/** @var Nette\Application\IRouter */
 	private $router;
 
-	/** @var Nette\Http\IRequest */
-	private $httpRequest;
+	/** @var Nette\Http\UrlScript */
+	private $refUrl;
+
+	/** @var string */
+	private $refUrlHost;
 
 
 	public function __construct(Nette\Application\IRouter $router, Nette\Http\IRequest $httpRequest)
 	{
 		$this->router = $router;
-		$this->httpRequest = $httpRequest;
+		$this->refUrl = $httpRequest->getUrl();
+		$this->refUrlHost = $this->refUrl->getHostUrl();
 	}
 
 
@@ -59,20 +63,20 @@ class LinkFactory extends Nette\Object
 		$params['action'] = substr($destination, $pos + 1);
 
 		$request = new Nette\Application\Request($presenter, 'GET', $params);
-		$refUrl = $this->httpRequest->getUrl();
-		$url = $this->router->constructUrl($request, $refUrl);
+		$url = $this->router->constructUrl($request, $this->refUrl);
 		if ($url === NULL) {
 			throw new InvalidLinkException("Router failed to create link to '$destination'.");
 		}
 
-		if (!$absoluteUrl) {
-			$hostUrl = $refUrl->getHostUrl();
-			if (strncmp($url, $hostUrl, strlen($hostUrl)) === 0) {
-				$url = substr($url, strlen($hostUrl));
-			}
+		if (!$absoluteUrl && strncmp($url, $this->refUrlHost, strlen($this->refUrlHost)) === 0) {
+			$url = substr($url, strlen($this->refUrlHost));
 		}
 
-		return $url . $fragment;
+		if ($fragment) {
+			$url .= $fragment;
+		}
+
+		return $url;
 	}
 
 }
