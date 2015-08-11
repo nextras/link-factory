@@ -10,7 +10,7 @@
 		}
 	],
 	"require": {
-		"php": "~5.3",
+		"php": ">=5.3",
 		"nette/application": "~2.2"
 	},
 	"require-dev": {
