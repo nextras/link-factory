@@ -60,7 +60,9 @@ class LinkFactory extends Nette\Object
 
 		$pos = strrpos($destination, ':');
 		$presenter = substr($destination, 0, $pos);
-		$params['action'] = substr($destination, $pos + 1);
+		if ($pos + 1 < strlen($destination)) {
+			$params['action'] = substr($destination, $pos + 1);
+		}
 
 		$request = new Nette\Application\Request($presenter, 'GET', $params);
 		$url = $this->router->constructUrl($request, $this->refUrl);

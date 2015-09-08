@@ -37,7 +37,7 @@ class LinkFactoryTest extends Tester\TestCase
 
 		$router = Mockery::mock('Nette\Application\IRouter')
 			->shouldReceive('constructUrl')->with($appRequestMatcher, $refUrl)
-			->andReturnUsing(array(new Route('<presenter>/<action>'), 'constructUrl'))
+			->andReturnUsing(array(new Route('<presenter>[/<action>]'), 'constructUrl'))
 			->getMock();
 
 		$request = Mockery::mock('Nette\Http\IRequest')
@@ -67,6 +67,11 @@ class LinkFactoryTest extends Tester\TestCase
 				'Admin:Dashboard:default', array(),
 				'Admin:Dashboard', array('action' => 'default'),
 				'/basepath/admin.dashboard/default'
+			),
+			array(
+				'Foo:', array(),
+				'Foo', array(),
+				'/basepath/foo',
 			),
 		);
 	}
