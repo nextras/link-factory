@@ -8,7 +8,7 @@ use Nette;
 /**
  * A simple link factory.
  */
-class LinkFactory extends Nette\Object
+class LinkFactory
 {
 
 	/** @var Nette\Application\IRouter */
