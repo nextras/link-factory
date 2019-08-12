@@ -1,5 +1,13 @@
-Nextras\LinkFactory
+Nextras LinkFactory
 ===========
+
+====================
+
+**This repository is deprecated.<br>
+The same functionality is provided by Nette Framework itself.<br>
+Use `LinkGenerator` in [nette/application](https://github.com/nette/application).**
+
+====================
 
 [![Build Status](https://travis-ci.org/nextras/link-factory.svg?branch=master)](https://travis-ci.org/nextras/link-factory)
 [![Downloads this Month](https://img.shields.io/packagist/dm/nextras/link-factory.svg?style=flat)](https://packagist.org/packages/nextras/link-factory)
